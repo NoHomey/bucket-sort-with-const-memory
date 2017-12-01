@@ -1,0 +1,51 @@
+#pragma once
+
+#include "../SingleLinkedList.thd"
+
+template<typename T>
+class SingleLinkedList<T>::ConstIterator {
+    friend SingleLinkedList<T>;
+
+public:
+    ConstIterator() = delete;
+
+    ~ConstIterator() noexcept = default;
+
+    ConstIterator(const ConstIterator& other) noexcept = default;
+
+    ConstIterator(ConstIterator&& other) noexcept = default;
+
+    ConstIterator& operator=(const ConstIterator& other) noexcept = default;
+
+    ConstIterator& operator=(ConstIterator&& other) noexcept = default;
+
+public:
+    explicit operator bool() const noexcept;
+
+    bool operator==(const ConstIterator& other) const noexcept;
+
+    bool operator!=(const ConstIterator& other) const noexcept;
+
+    bool operator!() const noexcept;
+
+    const T& operator*() const noexcept;
+
+    const T* operator->() const noexcept;
+
+public:
+    ConstIterator& operator++() noexcept;
+
+    ConstIterator operator++(int) noexcept;
+
+private:
+    ConstIterator(Node* node, const SingleLinkedList<T>* list) noexcept;
+
+    bool isValid() const noexcept;
+
+private:
+    Node* node;
+
+    const SingleLinkedList<T>* list;
+};
+
+#include "ConstIterator.tci"

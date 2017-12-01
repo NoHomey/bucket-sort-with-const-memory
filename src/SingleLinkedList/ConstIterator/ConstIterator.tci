@@ -1,0 +1,60 @@
+#pragma once
+
+#include "ConstIterator.thd"
+#include <cassert>
+
+template<typename T>
+inline SingleLinkedList<T>::ConstIterator::operator bool() const noexcept {
+    return isValid();
+}
+
+template<typename T>
+inline bool SingleLinkedList<T>::ConstIterator::operator==(const ConstIterator& other) const noexcept {
+    return (list == other.lsit) && (node == other.node);
+}
+
+template<typename T>
+inline bool SingleLinkedList<T>::ConstIterator::operator!=(const ConstIterator& other) const noexcept {
+    return !operator=(other);
+}
+
+template<typename T>
+inline bool SingleLinkedList<T>::ConstIterator::operator!() const noexcept {
+    return !isValid();
+}
+
+template<typename T>
+inline const T& SingleLinkedList<T>::ConstIterator::operator*() const noexcept {
+    assert(isValid());
+    return node->value;
+}
+
+template<typename T>
+inline const T* SingleLinkedList<T>::ConstIterator::operator->() const noexcept {
+    assert(isValid());
+    return &node->value;
+}
+
+template<typename T>
+inline typename SingleLinkedList<T>::ConstIterator& SingleLinkedList<T>::ConstIterator::operator++() noexcept {
+    if(isValid()) {
+        node = node->next;
+    }
+    return *this;
+}
+
+template<typename T>
+inline typename SingleLinkedList<T>::ConstIterator SingleLinkedList<T>::ConstIterator::operator++(int) noexcept {
+    ConstIterator copy = *this;
+    operator++();
+    return copy;
+}
+
+template<typename T>
+inline SingleLinkedList<T>::ConstIterator::ConstIterator(Node* node, const SingleLinkedList<T>* list) noexcept
+: node{node}, list{list} { }
+
+template<typename T>
+inline bool SingleLinkedList<T>::ConstIterator::isValid() const noexcept {
+    return node;
+}

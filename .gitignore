@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+
+# dependencies
+dependencies/googletest
+dependencies/googlemock
+
+# gcov
+*.gcda
+*.gcno
+*.info
+
+# tests
+*_spec
+coverage

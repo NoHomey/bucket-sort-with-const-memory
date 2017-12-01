@@ -1,0 +1,63 @@
+#pragma once
+
+#include <cstddef>
+
+template<typename T>
+class SingleLinkedList {
+public:
+    class ConstIterator;
+
+public:
+    SingleLinkedList() noexcept;
+
+    ~SingleLinkedList() noexcept;
+
+    SingleLinkedList(const SingleLinkedList& other);
+
+    SingleLinkedList(SingleLinkedList&& other) noexcept;
+
+    SingleLinkedList& operator=(const SingleLinkedList& other);
+
+    SingleLinkedList& operator=(SingleLinkedList&& other) noexcept;
+
+public:
+    std::size_t length() const noexcept;
+
+    bool isEmpty() const noexcept;
+
+    ConstIterator first() const noexcept;
+
+public:
+    void append(const T& value);
+
+    void append(T&& value);
+
+    void append(SingleLinkedList&& other) noexcept;
+
+public:
+    template<const std::size_t bucketsCount>
+    void bucketSort(std::size_t (*bucketSelector)(const T&)) noexcept;
+
+private:
+    struct Node;
+
+private:
+    void destroy() noexcept;
+
+    void null() noexcept;
+
+    void appendNode(Node* node) noexcept;
+
+    void append(Node* node) noexcept;
+
+private:
+    Node* head;
+
+    Node* tail;
+
+    std::size_t size;
+};
+
+#include "Node/Node.thd"
+#include "ConstIterator/ConstIterator.thd"
+#include "SingleLinkedList.tci"

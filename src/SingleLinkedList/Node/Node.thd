@@ -1,0 +1,28 @@
+#pragma once
+
+#include "../SingleLinkedList.thd"
+
+template<typename T>
+struct SingleLinkedList<T>::Node {
+    Node() = delete;
+
+    ~Node() noexcept = default;
+
+    Node(const Node& other) noexcept = default;
+
+    Node(Node&& other) noexcept = default;
+
+    Node& operator=(const Node& other) noexcept = default;
+
+    Node& operator=(Node&& other) noexcept = default;
+
+    Node(const T& value, Node* next = nullptr);
+
+    Node(T&& value, Node* next = nullptr) noexcept;
+
+    Node* next;
+
+    T value;
+};
+
+#include "Node.tci"
