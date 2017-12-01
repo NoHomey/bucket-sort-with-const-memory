@@ -42,7 +42,7 @@ int main() {
 
     Students students;
 
-    for(std::size_t c = 0; c < 2; ++c) {
+    for(std::size_t c = 0; c < 10000; ++c) {
         students.append(stubStudent());
     }
 
@@ -50,7 +50,7 @@ int main() {
 
     std::cout << "-----------------------------------------------------" << std::endl;
 
-    students.bucketSort<groups>(groupSelector);
+    students.bucketSort(groups, groupSelector);
 
     print(students);
 

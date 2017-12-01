@@ -111,8 +111,7 @@ inline void SingleLinkedList<T>::append(Node* node) noexcept {
 }
 
 template<typename T>
-template<const std::size_t bucketsCount>
-inline void SingleLinkedList<T>::bucketSort(std::size_t (*bucketSelector)(const T&)) noexcept {
+inline void SingleLinkedList<T>::bucketSort(const std::size_t bucketsCount, std::size_t (*bucketSelector)(const T&)) noexcept {
     assert(bucketsCount);
     if(size > 1) {
         const size_t savedSize = size;
