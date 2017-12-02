@@ -1,0 +1,95 @@
+#pragma once
+
+#include "ChunkAllocator.thd"
+#include <utility>
+#include <cassert>
+
+template<typename T>
+inline ChunkAllocator::forType<T>::forType() noexcept
+: forType{defaultAllocationCount} { }
+
+template<typename T>
+inline ChunkAllocator::forType<T>::forType(const std::size_t allocationCount) noexcept
+: allocatedNodesCounter{0},
+inUseAllocatedNodesCounter{0},
+nextAllocationCount{allocationCount},
+currentAllocationCount{allocationCount},
+currentChunkOffset{0},
+allocated{nullptr},
+lastAllocated{nullptr} { }
+
+template<typename T>
+inline ChunkAllocator::forType<T>::~forType() noexcept {
+    deleteAllAllocatedNodes();
+}
+
+template<typename T>
+inline std::size_t ChunkAllocator::forType<T>::allocatedNodes() const noexcept {
+    return allocatedNodesCounter;
+}
+
+template<typename T>
+inline std::size_t ChunkAllocator::forType<T>::inUseAllocatedNodes() const noexcept {
+    return inUseAllocatedNodesCounter;
+}
+
+template<typename T>
+inline std::size_t ChunkAllocator::forType<T>::getNextAllocationCount() const noexcept {
+    return nextAllocationCount;
+}
+
+template<typename T>
+inline bool ChunkAllocator::forType<T>::canDeleteAllAllocatedNodes() const noexcept {
+    return true;
+}
+ 
+template<typename T>
+inline void ChunkAllocator::forType<T>::setNextAllocationCount(const std::size_t allocationCount) noexcept {
+    nextAllocationCount = allocationCount;
+}
+
+template<typename T>
+template<typename... Args>
+inline T*  ChunkAllocator::forType<T>::newNode(Args... args) {
+    if((currentChunkOffset == currentAllocationCount) || (!allocated)) {
+        char* newChunk = new char[sizeof(Chunk) + sizeof(T) * nextAllocationCount];
+        new (newChunk) Chunk{nextAllocationCount};
+        currentChunkOffset = 0;
+        Chunk* lastAllocatedChunk = reinterpret_cast<Chunk*>(newChunk);
+        lastAllocated = allocated ? (lastAllocated->next = lastAllocatedChunk) : (allocated = lastAllocatedChunk);
+        currentAllocationCount = nextAllocationCount;
+        allocatedNodesCounter += nextAllocationCount;
+    }
+    T* node = new(reinterpret_cast<char*>(lastAllocated) + (sizeof(Chunk) + sizeof(T) * currentChunkOffset)) T{std::forward<Args>(args)...};
+    ++currentChunkOffset;
+    ++inUseAllocatedNodesCounter;
+    return node;
+}
+
+// to be Implemented
+template<typename T>
+inline void ChunkAllocator::forType<T>::deleteNode(const T*) noexcept {
+    assert(false);
+}
+
+template<typename T>
+inline void ChunkAllocator::forType<T>::deleteAllAllocatedNodes() noexcept {
+    if(allocated) {
+        Chunk* chunk;
+        while(allocated) {
+            chunk = allocated;
+            allocated = allocated->next;
+            const std::size_t destructorsCount = allocated ? chunk->count : currentChunkOffset;
+            T* allocatedNodes = reinterpret_cast<T*>(reinterpret_cast<char*>(chunk) + sizeof(Chunk));
+            for(std::size_t index = 0; index < destructorsCount; ++index) {
+                (allocatedNodes + index)->~T();
+            }
+            chunk->~Chunk();
+            delete[] reinterpret_cast<char*>(chunk);
+        }
+        allocatedNodesCounter = 0;
+        inUseAllocatedNodesCounter = 0;
+        currentChunkOffset = 0;
+        lastAllocated = nullptr;
+    }
+}

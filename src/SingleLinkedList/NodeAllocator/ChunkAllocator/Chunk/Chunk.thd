@@ -1,0 +1,24 @@
+#pragma once
+
+#include "../ChunkAllocator.thd"
+
+template<typename T>
+struct ChunkAllocator::forType<T>::Chunk {
+    Chunk* next;
+
+    const std::size_t count;
+
+    Chunk(const std::size_t count) noexcept;
+
+    ~Chunk() noexcept = default;
+
+    Chunk(const Chunk& other) noexcept = delete;
+
+    Chunk(Chunk&& other) noexcept = delete;
+
+    Chunk& operator=(const Chunk& other) noexcept = delete;
+
+    Chunk& operator=(Chunk&& other) noexcept = delete;
+};
+
+#include "Chunk.tci"

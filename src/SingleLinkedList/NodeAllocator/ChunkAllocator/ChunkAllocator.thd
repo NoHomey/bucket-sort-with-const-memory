@@ -2,16 +2,16 @@
 
 #include <cstddef>
 
-class Operator {
+class ChunkAllocator {
 public:
     template<typename T>
     class forType {
     public:
         forType() noexcept;
 
-        forType(const std::size_t) noexcept;
+        forType(const std::size_t allocationCount) noexcept;
 
-        ~forType() noexcept = default;
+        ~forType() noexcept;
 
         forType(const forType& other) noexcept = delete;
 
@@ -31,7 +31,7 @@ public:
         bool canDeleteAllAllocatedNodes() const noexcept;
  
     public:
-        void setNextAllocationCount(const std::size_t) noexcept;
+        void setNextAllocationCount(const std::size_t allocationCount) noexcept;
 
         template<typename... Args>
         T* newNode(Args... args);
@@ -41,8 +41,27 @@ public:
         void deleteAllAllocatedNodes() noexcept;
 
     private:
-        std::size_t counter;
+        struct Chunk;
+
+    private:
+        static const std::size_t defaultAllocationCount = 4096;
+
+    private:
+        std::size_t allocatedNodesCounter;
+
+        std::size_t inUseAllocatedNodesCounter;
+
+        std::size_t nextAllocationCount;
+
+        std::size_t currentAllocationCount;
+
+        std::size_t currentChunkOffset;
+
+        Chunk* allocated;
+
+        Chunk* lastAllocated;
     };
 };
 
-#include "Operator.tci"
+#include "Chunk/Chunk.thd"
+#include "ChunkAllocator.tci"

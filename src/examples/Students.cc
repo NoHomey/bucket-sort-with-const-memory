@@ -1,7 +1,9 @@
 #include "../SingleLinkedList/SingleLinkedList.thd"
+#include "../SingleLinkedList/NodeAllocator/ChunkAllocator/ChunkAllocator.thd"
 #include <cstdlib>
 #include <cstdlib>
 #include <iostream>
+#include <chrono>
 
 struct Student {
     using Number = unsigned short;
@@ -16,8 +18,6 @@ struct Student {
     GroupId groupId;
 };
 
-using Students = SingleLinkedList<Student>;
-
 const unsigned seed = 4096;
 
 const Student::GroupId groups = 7;
@@ -31,29 +31,47 @@ Student stubStudent() noexcept {
     return {number,  static_cast<Student::GroupId>(number % groups)};
 }
 
-void print(const Students& students) noexcept {
-    for(Students::ConstIterator iter = students.first(); iter; ++iter) {
-        std::cout << static_cast<unsigned short>(iter->groupId) << ' ' << iter->number << std::endl;
-    }
-    std::cout << "count " << students.length() << std::endl; 
-}
-
-int main() {
+template<typename Students>
+void run(Students& students) {
     std::srand(seed);
 
-    Students students;
+    auto start = std::chrono::steady_clock::now();
 
-    for(std::size_t c = 0; c < 10000; ++c) {
+    for(std::size_t c = 0; c < 100000000; ++c) {
         students.append(stubStudent());
     }
 
-    print(students);
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    std::cout << "append: " << diff.count() << std::endl;
 
-    std::cout << "-----------------------------------------------------" << std::endl;
+    start = std::chrono::steady_clock::now();
+    students.template bucketSort<groups>(groupSelector);
+    end = std::chrono::steady_clock::now();
+    diff = end - start;
+    std::cout << "sort: " << diff.count() << std::endl;
+}
 
-    students.bucketSort<groups>(groupSelector);
+int main() {
+    {
+        SingleLinkedList<Student, ChunkAllocator> students{100000000};
+        run(students);
+    }
+    
+    {
+        SingleLinkedList<Student, ChunkAllocator> students{100000};
+        run(students);
+    }
+    
+    {
+        SingleLinkedList<Student, ChunkAllocator> students;
+        run(students);
+    }
 
-    print(students);
+    {
+        SingleLinkedList<Student> students;
+        run(students);
+    }
 
     return 0;
 }

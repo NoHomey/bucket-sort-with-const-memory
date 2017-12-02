@@ -8,6 +8,10 @@ inline SingleLinkedList<T, NodeAllocator>::SingleLinkedList() noexcept
 : list{}, allocator{} { }
 
 template<typename T, class NodeAllocator>
+inline SingleLinkedList<T, NodeAllocator>::SingleLinkedList(const std::size_t allocationCount) noexcept
+: list{}, allocator{allocationCount} { }
+
+template<typename T, class NodeAllocator>
 inline SingleLinkedList<T, NodeAllocator>::~SingleLinkedList() noexcept {
     destroy();
     null();
@@ -49,6 +53,16 @@ inline std::size_t SingleLinkedList<T, NodeAllocator>::length() const noexcept {
 }
 
 template<typename T, class NodeAllocator>
+inline std::size_t SingleLinkedList<T, NodeAllocator>::capacity() const noexcept {
+    return allocator.allocatedNodes();
+}
+
+template<typename T, class NodeAllocator>
+inline std::size_t SingleLinkedList<T, NodeAllocator>::getNextAllocationCount() const noexcept {
+    return allocator.getNextAllocationCount();
+}
+
+template<typename T, class NodeAllocator>
 inline bool SingleLinkedList<T, NodeAllocator>::isEmpty() const noexcept {
     return list.isEmpty();
 }
@@ -56,6 +70,11 @@ inline bool SingleLinkedList<T, NodeAllocator>::isEmpty() const noexcept {
 template<typename T, class NodeAllocator>
 inline typename SingleLinkedList<T, NodeAllocator>::ConstIterator SingleLinkedList<T, NodeAllocator>::first() const noexcept {
     return {list.head, this};
+}
+
+template<typename T, class NodeAllocator>
+inline void SingleLinkedList<T, NodeAllocator>::setNextAllocationCount(const std::size_t allocationCount) noexcept {
+    allocator.setNextAllocationCount(allocationCount);
 }
 
 template<typename T, class NodeAllocator>

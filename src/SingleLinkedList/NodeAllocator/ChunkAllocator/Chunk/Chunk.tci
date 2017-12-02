@@ -1,0 +1,7 @@
+#pragma once
+
+#include "Chunk.thd"
+
+template<typename T>
+ChunkAllocator::forType<T>::Chunk::Chunk(const std::size_t count) noexcept
+: next{nullptr}, count{count} { }

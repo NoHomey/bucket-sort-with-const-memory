@@ -23,7 +23,7 @@ inline std::size_t Operator::forType<T>::inUseAllocatedNodes() const noexcept {
 }
 
 template<typename T>
-inline std::size_t Operator::forType<T>::getAllocationCount() const noexcept {
+inline std::size_t Operator::forType<T>::getNextAllocationCount() const noexcept {
     return 1;
 }
 
@@ -33,7 +33,7 @@ inline bool Operator::forType<T>::canDeleteAllAllocatedNodes() const noexcept {
 }
  
 template<typename T>
-inline void Operator::forType<T>::setAllocationCount(const std::size_t) noexcept { }
+inline void Operator::forType<T>::setNextAllocationCount(const std::size_t) noexcept { }
 
 template<typename T>
 template<typename... Args>
@@ -44,13 +44,13 @@ inline T*  Operator::forType<T>::newNode(Args... args) {
 }
 
 template<typename T>
-void Operator::forType<T>::deleteNode(const T* ptr) noexcept {
+inline void Operator::forType<T>::deleteNode(const T* ptr) noexcept {
     assert(counter);
     delete ptr;
     --counter;
 }
 
 template<typename T>
-void Operator::forType<T>::deleteAllAllocatedNodes() noexcept {
+inline void Operator::forType<T>::deleteAllAllocatedNodes() noexcept {
     assert(false);
 }

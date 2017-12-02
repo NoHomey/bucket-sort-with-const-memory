@@ -12,6 +12,8 @@ public:
 public:
     SingleLinkedList() noexcept;
 
+    SingleLinkedList(const std::size_t allocationCount) noexcept;
+
     ~SingleLinkedList() noexcept;
 
     SingleLinkedList(const SingleLinkedList& other);
@@ -25,11 +27,17 @@ public:
 public:
     std::size_t length() const noexcept;
 
+    std::size_t capacity() const noexcept;
+
+    std::size_t getNextAllocationCount() const noexcept;
+
     bool isEmpty() const noexcept;
 
     ConstIterator first() const noexcept;
 
 public:
+    void setNextAllocationCount(const std::size_t allocationCount) noexcept;
+
     void append(const T& value);
 
     void append(T&& value);
