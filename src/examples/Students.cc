@@ -35,6 +35,7 @@ void print(const Students& students) noexcept {
     for(Students::ConstIterator iter = students.first(); iter; ++iter) {
         std::cout << static_cast<unsigned short>(iter->groupId) << ' ' << iter->number << std::endl;
     }
+    std::cout << "count " << students.length() << std::endl; 
 }
 
 int main() {

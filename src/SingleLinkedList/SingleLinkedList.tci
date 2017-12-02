@@ -5,7 +5,7 @@
 
 template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList() noexcept
-: head{nullptr}, tail{nullptr}, size{0} { }
+: head{nullptr}, tail{nullptr} { }
 
 template<typename T>
 inline SingleLinkedList<T>::~SingleLinkedList() noexcept {
@@ -17,14 +17,13 @@ template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList(const SingleLinkedList& other)
 : SingleLinkedList{} {
     for(Node* iter = other.head; iter; iter = iter->next) {
-        appendNode(new Node{iter->value});
+        append(new Node{iter->value});
     }
-    size = other.size;
 }
 
 template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList(SingleLinkedList&& other) noexcept
-: head{other.head}, tail{other.tail}, size{other.size} {
+: head{other.head}, tail{other.tail} {
     other.null();
 }
 
@@ -42,7 +41,6 @@ SingleLinkedList<T>& SingleLinkedList<T>::operator=(SingleLinkedList&& other) no
         destroy();
         head = other.head;
         tail = other.tail;
-        size = other.size;
         other.null();
     }
     return *this;
@@ -50,6 +48,10 @@ SingleLinkedList<T>& SingleLinkedList<T>::operator=(SingleLinkedList&& other) no
 
 template<typename T>
 inline std::size_t SingleLinkedList<T>::length() const noexcept {
+    std::size_t size = 0;
+    for(Node* iter = head; iter; iter = iter->next) {
+        ++size;
+    }
     return size;
 }
 
@@ -76,9 +78,8 @@ inline void SingleLinkedList<T>::append(T&& value) {
 template<typename T>
 inline void SingleLinkedList<T>::append(SingleLinkedList&& other) noexcept {
     assert(this != &other);
-    appendNode(other.head);
+    append(other.head);
     tail = other.tail;
-    size += other.size;
     other.null();
 }
 
@@ -95,32 +96,24 @@ inline void SingleLinkedList<T>::destroy() noexcept {
 template<typename T>
 inline void SingleLinkedList<T>::null() noexcept {
     head = tail = nullptr;
-    size = 0;
-}
-
-template<typename T>
-inline void SingleLinkedList<T>::appendNode(Node* node) noexcept {
-    assert(node);
-    tail = !isEmpty() ? (tail->next = node) : (head = node);
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::append(Node* node) noexcept {
-    appendNode(node);
-    ++size;
+    assert(node);
+    tail = !isEmpty() ? (tail->next = node) : (head = node);
 }
 
 template<typename T>
 template<const std::size_t bucketsCount>
 inline void SingleLinkedList<T>::bucketSort(std::size_t (*bucketSelector)(const T&)) noexcept {
     assert(bucketsCount);
-    if(size > 1) {
-        const size_t savedSize = size;
+    if(!isEmpty() && head->next) {
         SingleLinkedList buckets[bucketsCount];
         Node* iter = head;
         null();
         for(; iter; iter = iter->next) {
-            buckets[bucketSelector(iter->value)].appendNode(iter);
+            buckets[bucketSelector(iter->value)].append(iter);
         }
         for(std::size_t bucketIndex = 0; bucketIndex < bucketsCount; ++bucketIndex) {
             if(!buckets[bucketIndex].isEmpty()) {
@@ -128,6 +121,5 @@ inline void SingleLinkedList<T>::bucketSort(std::size_t (*bucketSelector)(const 
             }
         }
         tail->next = nullptr;
-        size = savedSize;
     }
 }

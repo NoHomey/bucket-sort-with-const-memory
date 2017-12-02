@@ -46,16 +46,12 @@ private:
 
     void null() noexcept;
 
-    void appendNode(Node* node) noexcept;
-
     void append(Node* node) noexcept;
 
 private:
     Node* head;
 
     Node* tail;
-
-    std::size_t size;
 };
 
 #include "Node/Node.thd"
