@@ -2,8 +2,8 @@
 
 #include "../SingleLinkedList.thd"
 
-template<typename T>
-struct SingleLinkedList<T>::Node {
+template<typename T, class NodeAllocator>
+struct SingleLinkedList<T, NodeAllocator>::Node {
     Node() = delete;
 
     ~Node() noexcept = default;

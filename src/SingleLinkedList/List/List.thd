@@ -2,8 +2,8 @@
 
 #include "../SingleLinkedList.thd"
 
-template<typename T>
-struct SingleLinkedList<T>::List {
+template<typename T, class NodeAllocator>
+struct SingleLinkedList<T, NodeAllocator>::List {
     List() noexcept;
 
     ~List() noexcept = default;

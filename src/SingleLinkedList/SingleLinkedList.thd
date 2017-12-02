@@ -2,8 +2,9 @@
 
 #include <cstddef>
 
+#include "NodeAllocator/Operator/Operator.thd"
 
-template<typename T>
+template<typename T, class NodeAllocator = Operator>
 class SingleLinkedList {
 public:
     class ConstIterator;
@@ -53,6 +54,8 @@ private:
 
 private:
     List list;
+
+    typename NodeAllocator::template forType<Node> allocator;
 };
 
 #include "Node/Node.thd"

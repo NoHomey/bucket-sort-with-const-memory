@@ -3,23 +3,23 @@
 #include "List.thd"
 #include <cassert>
 
-template<typename T>
-SingleLinkedList<T>::List::List() noexcept
+template<typename T, class NodeAllocator>
+SingleLinkedList<T, NodeAllocator>::List::List() noexcept
 : head{nullptr}, tail{nullptr} { }
 
-template<typename T>
-bool SingleLinkedList<T>::List::isEmpty() const noexcept {
+template<typename T, class NodeAllocator>
+bool SingleLinkedList<T, NodeAllocator>::List::isEmpty() const noexcept {
     return !head;
 }
 
-template<typename T>
-void SingleLinkedList<T>::List::append(Node* node) noexcept {
+template<typename T, class NodeAllocator>
+void SingleLinkedList<T, NodeAllocator>::List::append(Node* node) noexcept {
     assert(node);
     tail = !isEmpty() ? (tail->next = node) : (head = node);
 }
 
-template<typename T>
-void SingleLinkedList<T>::List::append(const List& other) noexcept {
+template<typename T, class NodeAllocator>
+void SingleLinkedList<T, NodeAllocator>::List::append(const List& other) noexcept {
     assert(this != &other);
     append(other.head);
     tail = other.tail;

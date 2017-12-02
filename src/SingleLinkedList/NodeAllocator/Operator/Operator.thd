@@ -1,0 +1,48 @@
+#pragma once
+
+#include <cstddef>
+
+class Operator {
+public:
+    template<typename T>
+    class forType {
+    public:
+        forType() noexcept;
+
+        forType(const std::size_t) noexcept;
+
+        ~forType() noexcept = default;
+
+        forType(const forType& other) noexcept = delete;
+
+        forType(forType&& other) noexcept = delete;
+
+        forType& operator=(const forType& other) noexcept = delete;
+
+        forType& operator=(forType&& other) noexcept = delete;
+
+    public:
+        std::size_t allocatedNodes() const noexcept;
+
+        std::size_t inUseAllocatedNodes() const noexcept;
+
+        std::size_t getAllocationCount() const noexcept;
+
+        bool canDeleteAllAllocatedNodes() const noexcept;
+ 
+    public:
+        void setAllocationCount(const std::size_t) noexcept;
+
+        template<typename... Args>
+        T* newNode(Args... args);
+
+        void deleteNode(const T* ptr) noexcept;
+
+        void deleteAllAllocatedNodes() noexcept;
+
+    private:
+        std::size_t counter;
+    };
+};
+
+#include "Operator.tci"

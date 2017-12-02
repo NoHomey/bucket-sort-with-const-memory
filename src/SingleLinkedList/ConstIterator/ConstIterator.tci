@@ -3,58 +3,58 @@
 #include "ConstIterator.thd"
 #include <cassert>
 
-template<typename T>
-inline SingleLinkedList<T>::ConstIterator::operator bool() const noexcept {
+template<typename T, class NodeAllocator>
+inline SingleLinkedList<T, NodeAllocator>::ConstIterator::operator bool() const noexcept {
     return isValid();
 }
 
-template<typename T>
-inline bool SingleLinkedList<T>::ConstIterator::operator==(const ConstIterator& other) const noexcept {
+template<typename T, class NodeAllocator>
+inline bool SingleLinkedList<T, NodeAllocator>::ConstIterator::operator==(const ConstIterator& other) const noexcept {
     return (list == other.lsit) && (node == other.node);
 }
 
-template<typename T>
-inline bool SingleLinkedList<T>::ConstIterator::operator!=(const ConstIterator& other) const noexcept {
+template<typename T, class NodeAllocator>
+inline bool SingleLinkedList<T, NodeAllocator>::ConstIterator::operator!=(const ConstIterator& other) const noexcept {
     return !operator=(other);
 }
 
-template<typename T>
-inline bool SingleLinkedList<T>::ConstIterator::operator!() const noexcept {
+template<typename T, class NodeAllocator>
+inline bool SingleLinkedList<T, NodeAllocator>::ConstIterator::operator!() const noexcept {
     return !isValid();
 }
 
-template<typename T>
-inline const T& SingleLinkedList<T>::ConstIterator::operator*() const noexcept {
+template<typename T, class NodeAllocator>
+inline const T& SingleLinkedList<T, NodeAllocator>::ConstIterator::operator*() const noexcept {
     assert(isValid());
     return node->value;
 }
 
-template<typename T>
-inline const T* SingleLinkedList<T>::ConstIterator::operator->() const noexcept {
+template<typename T, class NodeAllocator>
+inline const T* SingleLinkedList<T, NodeAllocator>::ConstIterator::operator->() const noexcept {
     assert(isValid());
     return &node->value;
 }
 
-template<typename T>
-inline typename SingleLinkedList<T>::ConstIterator& SingleLinkedList<T>::ConstIterator::operator++() noexcept {
+template<typename T, class NodeAllocator>
+inline typename SingleLinkedList<T, NodeAllocator>::ConstIterator& SingleLinkedList<T, NodeAllocator>::ConstIterator::operator++() noexcept {
     if(isValid()) {
         node = node->next;
     }
     return *this;
 }
 
-template<typename T>
-inline typename SingleLinkedList<T>::ConstIterator SingleLinkedList<T>::ConstIterator::operator++(int) noexcept {
+template<typename T, class NodeAllocator>
+inline typename SingleLinkedList<T, NodeAllocator>::ConstIterator SingleLinkedList<T, NodeAllocator>::ConstIterator::operator++(int) noexcept {
     ConstIterator copy = *this;
     operator++();
     return copy;
 }
 
-template<typename T>
-inline SingleLinkedList<T>::ConstIterator::ConstIterator(Node* node, const SingleLinkedList<T>* list) noexcept
+template<typename T, class NodeAllocator>
+inline SingleLinkedList<T, NodeAllocator>::ConstIterator::ConstIterator(Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept
 : node{node}, list{list} { }
 
-template<typename T>
-inline bool SingleLinkedList<T>::ConstIterator::isValid() const noexcept {
+template<typename T, class NodeAllocator>
+inline bool SingleLinkedList<T, NodeAllocator>::ConstIterator::isValid() const noexcept {
     return node;
 }

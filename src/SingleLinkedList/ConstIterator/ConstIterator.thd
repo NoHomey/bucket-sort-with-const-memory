@@ -2,9 +2,9 @@
 
 #include "../SingleLinkedList.thd"
 
-template<typename T>
-class SingleLinkedList<T>::ConstIterator {
-    friend SingleLinkedList<T>;
+template<typename T, class NodeAllocator>
+class SingleLinkedList<T, NodeAllocator>::ConstIterator {
+    friend SingleLinkedList<T, NodeAllocator>;
 
 public:
     ConstIterator() = delete;
@@ -38,14 +38,14 @@ public:
     ConstIterator operator++(int) noexcept;
 
 private:
-    ConstIterator(Node* node, const SingleLinkedList<T>* list) noexcept;
+    ConstIterator(Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept;
 
     bool isValid() const noexcept;
 
 private:
     Node* node;
 
-    const SingleLinkedList<T>* list;
+    const SingleLinkedList<T, NodeAllocator>* list;
 };
 
 #include "ConstIterator.tci"
