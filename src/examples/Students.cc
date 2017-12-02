@@ -50,7 +50,7 @@ int main() {
 
     std::cout << "-----------------------------------------------------" << std::endl;
 
-    students.bucketSort(groups, groupSelector);
+    students.bucketSort<groups>(groupSelector);
 
     print(students);
 

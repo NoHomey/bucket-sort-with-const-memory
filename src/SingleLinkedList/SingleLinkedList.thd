@@ -35,7 +35,8 @@ public:
     void append(SingleLinkedList&& other) noexcept;
 
 public:
-    void bucketSort(const std::size_t bucketsCount, std::size_t (*bucketSelector)(const T&)) noexcept;
+    template<const std::size_t bucketsCount>
+    void bucketSort(std::size_t (*bucketSelector)(const T&)) noexcept;
 
 private:
     struct Node;
