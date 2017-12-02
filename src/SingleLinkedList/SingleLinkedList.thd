@@ -2,6 +2,7 @@
 
 #include <cstddef>
 
+
 template<typename T>
 class SingleLinkedList {
 public:
@@ -41,19 +42,20 @@ public:
 private:
     struct Node;
 
+    struct List;
+
 private:
     void destroy() noexcept;
 
     void null() noexcept;
 
-    void append(Node* node) noexcept;
+    void move(SingleLinkedList&& other) noexcept;
 
 private:
-    Node* head;
-
-    Node* tail;
+    List list;
 };
 
 #include "Node/Node.thd"
+#include "List/List.thd"
 #include "ConstIterator/ConstIterator.thd"
 #include "SingleLinkedList.tci"

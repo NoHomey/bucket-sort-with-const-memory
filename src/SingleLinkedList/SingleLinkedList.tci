@@ -5,7 +5,7 @@
 
 template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList() noexcept
-: head{nullptr}, tail{nullptr} { }
+: list{} { }
 
 template<typename T>
 inline SingleLinkedList<T>::~SingleLinkedList() noexcept {
@@ -16,21 +16,21 @@ inline SingleLinkedList<T>::~SingleLinkedList() noexcept {
 template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList(const SingleLinkedList& other)
 : SingleLinkedList{} {
-    for(Node* iter = other.head; iter; iter = iter->next) {
+    for(Node* iter = other.list.head; iter; iter = iter->next) {
         append(new Node{iter->value});
     }
 }
 
 template<typename T>
 inline SingleLinkedList<T>::SingleLinkedList(SingleLinkedList&& other) noexcept
-: head{other.head}, tail{other.tail} {
-    other.null();
+: list{} {
+    move(std::move(other));
 }
 
 template<typename T>
 SingleLinkedList<T>& SingleLinkedList<T>::operator=(const SingleLinkedList& other) {
     if(this != &other) {
-        operator=({other});
+        move({other});
     }
     return *this;
 }
@@ -38,10 +38,7 @@ SingleLinkedList<T>& SingleLinkedList<T>::operator=(const SingleLinkedList& othe
 template<typename T>
 SingleLinkedList<T>& SingleLinkedList<T>::operator=(SingleLinkedList&& other) noexcept {
     if(this != &other) {
-        destroy();
-        head = other.head;
-        tail = other.tail;
-        other.null();
+        move(std::move(other));
     }
     return *this;
 }
@@ -49,7 +46,7 @@ SingleLinkedList<T>& SingleLinkedList<T>::operator=(SingleLinkedList&& other) no
 template<typename T>
 inline std::size_t SingleLinkedList<T>::length() const noexcept {
     std::size_t size = 0;
-    for(Node* iter = head; iter; iter = iter->next) {
+    for(Node* iter = list.head; iter; iter = iter->next) {
         ++size;
     }
     return size;
@@ -57,69 +54,69 @@ inline std::size_t SingleLinkedList<T>::length() const noexcept {
 
 template<typename T>
 inline bool SingleLinkedList<T>::isEmpty() const noexcept {
-    return !head;
+    return list.isEmpty();
 }
 
 template<typename T>
 inline typename SingleLinkedList<T>::ConstIterator SingleLinkedList<T>::first() const noexcept {
-    return {head, this};
+    return {list.head, this};
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::append(const T& value) {
-    append(new Node{value});
+    list.append(new Node{value});
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::append(T&& value) {
-    append(new Node{std::move(value)});
+    list.append(new Node{std::move(value)});
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::append(SingleLinkedList&& other) noexcept {
-    assert(this != &other);
-    append(other.head);
-    tail = other.tail;
+    list.append(other.list);
     other.null();
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::destroy() noexcept {
     Node* temp;
-    while(head) {
-        temp = head;
-        head = head->next;
+    while(list.head) {
+        temp = list.head;
+        list.head = list.head->next;
         delete temp;
     }
 }
 
 template<typename T>
 inline void SingleLinkedList<T>::null() noexcept {
-    head = tail = nullptr;
+    list.head = list.tail = nullptr;
 }
 
 template<typename T>
-inline void SingleLinkedList<T>::append(Node* node) noexcept {
-    assert(node);
-    tail = !isEmpty() ? (tail->next = node) : (head = node);
+inline void SingleLinkedList<T>::move(SingleLinkedList&& other) noexcept {
+    destroy();
+    list.head = list.other.head;
+    list.tail = list.other.tail;
+    other.null();
 }
 
 template<typename T>
 template<const std::size_t bucketsCount>
 inline void SingleLinkedList<T>::bucketSort(std::size_t (*bucketSelector)(const T&)) noexcept {
     assert(bucketsCount);
-    if(!isEmpty() && head->next) {
-        SingleLinkedList buckets[bucketsCount];
-        Node* iter = head;
+    if(!isEmpty() && list.head->next) {
+        List buckets[bucketsCount];
+        Node* iter = list.head;
         null();
         for(; iter; iter = iter->next) {
             buckets[bucketSelector(iter->value)].append(iter);
         }
         for(std::size_t bucketIndex = 0; bucketIndex < bucketsCount; ++bucketIndex) {
             if(!buckets[bucketIndex].isEmpty()) {
-                append(std::move(buckets[bucketIndex]));
+                list.append(buckets[bucketIndex]);
             }
         }
-        tail->next = nullptr;
+        list.tail->next = nullptr;
     }
 }

@@ -1,0 +1,30 @@
+#pragma once
+
+#include "../SingleLinkedList.thd"
+
+template<typename T>
+struct SingleLinkedList<T>::List {
+    List() noexcept;
+
+    ~List() noexcept = default;
+
+    List(const List& other) noexcept = delete;
+
+    List(List&& other) noexcept = delete;
+
+    List& operator=(const List& other) noexcept = delete;
+
+    List& operator=(List&& other) noexcept = delete;
+
+    bool isEmpty() const noexcept;
+
+    void append(Node* node) noexcept;
+
+    void append(const List& other) noexcept;
+
+    Node* head;
+
+    Node* tail;
+};
+
+#include "List.tci"
