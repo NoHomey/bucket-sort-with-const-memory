@@ -21,7 +21,7 @@ template<typename T, class NodeAllocator>
 inline SingleLinkedList<T, NodeAllocator>::SingleLinkedList(const SingleLinkedList& other)
 : SingleLinkedList{} {
     for(Node* iter = other.list.head; iter; iter = iter->next) {
-        append(new Node{iter->value});
+        append(iter->value);
     }
 }
 
