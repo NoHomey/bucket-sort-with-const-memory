@@ -51,7 +51,7 @@ inline typename SingleLinkedList<T, NodeAllocator>::ConstIterator SingleLinkedLi
 }
 
 template<typename T, class NodeAllocator>
-inline SingleLinkedList<T, NodeAllocator>::ConstIterator::ConstIterator(Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept
+inline SingleLinkedList<T, NodeAllocator>::ConstIterator::ConstIterator(const Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept
 : node{node}, list{list} { }
 
 template<typename T, class NodeAllocator>

@@ -20,7 +20,7 @@ inline SingleLinkedList<T, NodeAllocator>::~SingleLinkedList() noexcept {
 template<typename T, class NodeAllocator>
 inline SingleLinkedList<T, NodeAllocator>::SingleLinkedList(const SingleLinkedList& other)
 : SingleLinkedList{} {
-    for(Node* iter = other.list.head; iter; iter = iter->next) {
+    for(const Node* iter = other.list.head; iter; iter = iter->next) {
         append(iter->value);
     }
 }

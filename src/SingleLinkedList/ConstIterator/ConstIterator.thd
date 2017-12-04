@@ -38,12 +38,12 @@ public:
     ConstIterator operator++(int) noexcept;
 
 private:
-    ConstIterator(Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept;
+    ConstIterator(const Node* node, const SingleLinkedList<T, NodeAllocator>* list) noexcept;
 
     bool isValid() const noexcept;
 
 private:
-    Node* node;
+    const Node* node;
 
     const SingleLinkedList<T, NodeAllocator>* list;
 };
